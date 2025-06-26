@@ -1,0 +1,47 @@
+#!/bin/bash
+
+PINK='\033[1;95m'
+WHITE='\033[1;97m'
+RESET='\033[0m'
+
+# Проверка и получение температуры CPU
+if command -v sensors >/dev/null 2>&1; then
+  CPU_TEMP=$(sensors | grep -m1 'Package id 0:' | awk '{print $4}')
+  # fallback, если Package id 0 отсутствует
+  if [ -z "$CPU_TEMP" ]; then
+    CPU_TEMP=$(sensors | grep -m1 'Core 0:' | awk '{print $3}')
+  fi
+else
+  CPU_TEMP="N/A"
+fi
+
+MEM_USED=$(free -h | awk '/^Mem:/ {print $3 " / " $2}')
+LOAD=$(uptime | awk -F 'load average:' '{ print $2 }' | cut -d',' -f1-3)
+DISK_USED=$(df -h / | awk 'NR==2 {print $3 " / " $2}')
+IP_ADDR=$(hostname -I | awk '{print $1}')
+
+echo -e "${PINK}
+   ┌────────────────────────┐
+   │   ░░░░░░░░░░░░░░░░░░   │
+   │   ░░░░░░░░░░░░░░░░░░   │
+   │   ░░░░░░░░░░░░░░░░░░   │
+   └────────────────────────┘
+   ║   ║   ║   ║   ║   ║   ║
+   ║   ║   ║   ║   ║   ║   ║
+  ═╩═══╩═══╩═══╩═══╩═══╩═══╩═
+${WHITE}
+OS: $(uname -o)    Arch: $(uname -m)
+Host: $(hostname)
+Kernel: $(uname -r)
+Uptime: $(uptime -p)
+Shell: $SHELL
+User: $USER
+CPU Temp: $CPU_TEMP
+Memory: $MEM_USED
+Load Avg: $LOAD
+Disk Usage: $DISK_USED
+IP: $IP_ADDR
+${PINK}
+Powered by lavochka.work.gd
+Please support the developer at lavochka.work.gd/lav0chka
+${RESET}"

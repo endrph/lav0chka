@@ -1,0 +1,7 @@
+Package: lav0chka-pro
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Lavka Team <mr.fuck2019@mail.ru>
+Description: Advanced terminal system info tool with pink bench ASCII and extended info
